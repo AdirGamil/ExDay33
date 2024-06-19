@@ -346,6 +346,7 @@ function cleanStats(stats) {
 
 
 function onShowRating(newVal){
+  
   document.querySelector('#ratingValue').innerHTML = newVal
   // console.log('hey');
 }
