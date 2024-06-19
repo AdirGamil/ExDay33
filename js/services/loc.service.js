@@ -110,33 +110,39 @@ function getLocCountByRateMap() {
 function getLocCountByUpdateTime() {
     return storageService.query(DB_KEY)
         .then(locs => {
-            const today = new Date()
-            today.setHours(0, 0, 0, 0)
+            const now = new Date();
+            const locCountByUpdateTime = {
+                today: 0,
+                pastDay: 0,
+                pastWeek: 0,
+                never: 0,
+                total: locs.length
+            };
 
-            const locCountByUpdateTime = locs.reduce((map, loc) => {
-                const lastUpdated = new Date(loc.lastUpdated)
-                lastUpdated.setHours(0, 0, 0, 0)
-                let updateCategory
-                if (lastUpdated.getTime() === today.getTime()) {
-                    updateCategory = 'today'
-                } else if (lastUpdated.getTime() < today.getTime() && lastUpdated.getTime() > 0) {
-                    updateCategory = 'past'
+            locs.forEach(loc => {
+                const lastUpdated = new Date(loc.lastUpdated);
+                const timeDiff = now - lastUpdated;
+                const hoursDiff = Math.floor(timeDiff / (1000 * 60 * 60));
+                const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+                if (hoursDiff < 24) {
+                    locCountByUpdateTime.today++;
+                } else if (daysDiff < 7) {
+                    locCountByUpdateTime.pastDay++;
+                } else if (daysDiff < 30) { // Adjust this condition based on your definition of "past week"
+                    locCountByUpdateTime.pastWeek++;
                 } else {
-                    updateCategory = 'never'
+                    locCountByUpdateTime.never++;
                 }
-                if (!map[updateCategory]) {
-                    map[updateCategory] = 0
-                }
-                map[updateCategory]++
-                return map
-            }, { today: 0, past: 0, never: 0 })
+            });
 
-            locCountByUpdateTime.total = locs.length
-            console.log(locCountByUpdateTime );
-            return locCountByUpdateTime
-
+            console.log(locCountByUpdateTime);
+            return locCountByUpdateTime;
         })
-
+        .catch(error => {
+            console.error('Error fetching location data:', error);
+            throw error; // Optionally re-throw or handle the error further
+        });
 }
 
 
