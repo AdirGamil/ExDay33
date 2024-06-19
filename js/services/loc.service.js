@@ -108,43 +108,42 @@ function getLocCountByRateMap() {
 
 /* add fun for getting the dates  */
 function getLocCountByUpdateTime() {
+    const now = new Date()
+
     return storageService.query(DB_KEY)
         .then(locs => {
-            const now = new Date();
             const locCountByUpdateTime = {
-                today: 0,
+                thisHour: 0,
                 pastDay: 0,
                 pastWeek: 0,
                 never: 0,
                 total: locs.length
-            };
-
+            }
             locs.forEach(loc => {
-                const lastUpdated = new Date(loc.lastUpdated);
-                const timeDiff = now - lastUpdated;
-                const hoursDiff = Math.floor(timeDiff / (1000 * 60 * 60));
-                const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                const lastUpdated = new Date(loc.updatedAt)
+                const timeDiff = now.getTime() - lastUpdated.getTime()
+                const hoursDiff = Math.floor(timeDiff / (1000 * 60 * 60))
+                const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24))
 
-                if (hoursDiff < 24) {
-                    locCountByUpdateTime.today++;
+                if (hoursDiff < 1) {
+                    locCountByUpdateTime.thisHour++
+                } else if (daysDiff < 1) {
+                    locCountByUpdateTime.pastDay++
                 } else if (daysDiff < 7) {
-                    locCountByUpdateTime.pastDay++;
-                } else if (daysDiff < 30) { // Adjust this condition based on your definition of "past week"
-                    locCountByUpdateTime.pastWeek++;
+                    locCountByUpdateTime.pastWeek++
                 } else {
-                    locCountByUpdateTime.never++;
+                    locCountByUpdateTime.never++
                 }
-            });
+            })
 
-            console.log(locCountByUpdateTime);
-            return locCountByUpdateTime;
+            console.log(locCountByUpdateTime)
+            return locCountByUpdateTime
         })
         .catch(error => {
-            console.error('Error fetching location data:', error);
-            throw error; // Optionally re-throw or handle the error further
-        });
+            console.error('Error fetching location data:', error)
+            throw error 
+        })
 }
-
 
 function setSortBy(sortBy = {}) {
     gSortBy = sortBy
@@ -203,20 +202,4 @@ function _createLoc(loc) {
 }
 
 
-// unused functions
-// function getEmptyLoc(name = '') {
-//     return {
-//         id: '',
-//         name,
-//         rate: 1,
-//         createdAt: Date.now(),
-//         updatedAt: Date.now(),
-//         geo: {
-//             lat: 0,
-//             lng: 0,
-//             zoom: 10,
-//             address: ''
-//         }
-//     }
-// }
 
