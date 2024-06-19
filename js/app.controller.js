@@ -17,11 +17,13 @@ window.app = {
   onSetSortBy,
   onSetFilterBy,
   renderLocStatsByDate,
+ onShowRating,
 }
 
 function onInit() {
   getFilterByFromQueryParams()
   loadAndRenderLocs()
+  
   mapService
     .initMap()
     .then(() => {
@@ -341,3 +343,5 @@ function cleanStats(stats) {
   }, [])
   return cleanedStats
 }
+
+

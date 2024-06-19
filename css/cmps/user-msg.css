@@ -11,3 +11,15 @@
     bottom: 10px;
     transition: bottom .5s;
 }
+
+.user-add-update {
+    position: fixed;
+    top: 50px; 
+    left: 50%;
+    background-color: #795789;
+    border: 1px solid #6e5f74;
+    padding: 120px 140px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    opacity: 1;
+}
