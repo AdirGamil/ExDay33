@@ -80,10 +80,7 @@
         <form id="update" onsubmit="onSubmit(event)">
             <label for="ratingInput"> Rating: <span id="ratingValue">3</span> </label>
             <input type="range" id="ratingInput" name="rating" step="1" min="0" max="5" value="3"
-                oninput="onShowRating(this.value)" />
-
-
-
+                oninput="app.onShowRating(this.value)" />
 
             <label for="text"> Name Of Place🦘: </label>
             <input type="text" id="text-Input">
