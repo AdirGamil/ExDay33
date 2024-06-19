@@ -1,12 +1,12 @@
 :root {
-    --bg1: darkslateblue;
-    --bg2: darkorchid;
-    --bg3: darkmagenta;
-    --color1: aliceblue;
+    --bg1: #2a272d;
+    --bg2: #2a272d;
+    --bg3: #5f616d;
+    --color1: #B8C5D6;
     --color2: deeppink;
-    --color3: gold;
-    --color4: goldenrod;
-    --gray1: lightgray;
+    --color3: rgb(110, 178, 255);
+    --color4: rgb(203, 187, 143);
+    --gray1: #EDF5FC;
 }
 
 /* Another theme */
