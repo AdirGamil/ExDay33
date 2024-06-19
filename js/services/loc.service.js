@@ -106,7 +106,7 @@ function getLocCountByRateMap() {
 }
 
 
-/* add fun forr getting the dates  */
+/* add fun for getting the dates  */
 function getLocCountByUpdateTime() {
     return storageService.query(DB_KEY)
         .then(locs => {

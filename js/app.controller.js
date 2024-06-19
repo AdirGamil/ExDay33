@@ -17,7 +17,7 @@ window.app = {
   onSetSortBy,
   onSetFilterBy,
   renderLocStatsByDate,
- onShowRating,
+  onShowRating,
 }
 
 function onInit() {
@@ -287,8 +287,8 @@ function renderLocStats() {
 }
 /* render date function */
 function renderLocStatsByDate() {
-  locService.getLocCountByUpdateTime().then((stats) => {
-      handleStats(stats, 'loc-stats-date')
+  locService.getLocCountByUpdateTime().then((date) => {
+      handleStats(date, 'loc-stats-date')
   })
 }
 
@@ -342,6 +342,12 @@ function cleanStats(stats) {
     return acc
   }, [])
   return cleanedStats
+}
+
+
+function onShowRating(newVal){
+  document.querySelector('#ratingValue').innerHTML = newVal
+  // console.log('hey');
 }
 
 

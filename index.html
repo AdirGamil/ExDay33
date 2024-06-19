@@ -37,7 +37,8 @@
                     <div>
                         <label>
                             Min Rate:
-                            <input name="filter-by-rate" type="range" min="0" max="5" value="0" class="filter-rate-range"
+                            <input name="filter-by-rate" type="range" min="0" max="5" value="0"
+                                class="filter-rate-range"
                                 onchange="this.title=this.value;app.onSetFilterBy({minRate: this.value})" />
                         </label>
                     </div>
@@ -77,18 +78,25 @@
 
     <div class="user-add-update">
         <form id="update" onsubmit="onSubmit(event)">
-          <label for="ratingInput"> Rating: <span id="ratingValue">1-5</span> </label>
-          <input type="range" id="ratingInput" name="rating" step="1" min="0" max="5" value="3"
-                >
+            <label for="ratingInput"> Rating: <span id="ratingValue">3</span> </label>
+            <input type="range" id="ratingInput" name="rating" step="1" min="0" max="5" value="3"
+                oninput="onShowRating(this.value)" />
+
+
+
+
+            <label for="text"> Name Of Place🦘: </label>
+            <input type="text" id="text-Input">
         </form>
-      </div>
+    </div>
 
 
-      
+
     <script async
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBh-xhaM8E4baaSLUuIQSBY2oVxKziNIwk&loading=async&callback=initMap">
-</script>
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBh-xhaM8E4baaSLUuIQSBY2oVxKziNIwk&loading=async&callback=initMap">
+        </script>
     <script type="module" src="js/app.controller.js"></script>
+
 </body>
 
 </html>
