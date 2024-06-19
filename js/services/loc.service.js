@@ -17,7 +17,7 @@ import { storageService } from './async-storage.service.js'
 
 const PAGE_SIZE = 5
 const DB_KEY = 'locs'
-var gSortBy = { rate: -1 }
+var gSortBy = { rate: -1, date: -1 }
 var gFilterBy = { txt: '', minRate: 0 }
 var gPageIdx
 
@@ -30,7 +30,8 @@ export const locService = {
     save,
     setFilterBy,
     setSortBy,
-    getLocCountByRateMap
+    getLocCountByRateMap,
+    getLocCountByUpdateTime
 }
 
 function query() {
@@ -54,6 +55,12 @@ function query() {
                 locs.sort((p1, p2) => (p1.rate - p2.rate) * gSortBy.rate)
             } else if (gSortBy.name !== undefined) {
                 locs.sort((p1, p2) => p1.name.localeCompare(p2.name) * gSortBy.name)
+            } else if (gSortBy.date !== undefined) {
+                locs.sort((p1, p2) => {
+                    const date1 = new Date(p1.lastUpdated)
+                    const date2 = new Date(p2.lastUpdated)
+                    return (date1 - date2) * gSortBy.date
+                })
             }
 
             return locs
@@ -97,6 +104,38 @@ function getLocCountByRateMap() {
             return locCountByRateMap
         })
 }
+
+
+/* add fun forr getting the dates  */
+function getLocCountByUpdateTime() {
+    return storageService.query(DB_KEY)
+        .then(locs => {
+            const today = new Date()
+            today.setHours(0, 0, 0, 0)
+
+            const locCountByUpdateTime = locs.reduce((map, loc) => {
+                const lastUpdated = new Date(loc.lastUpdated)
+                lastUpdated.setHours(0, 0, 0, 0)
+                let updateCategory
+                if (lastUpdated.getTime() === today.getTime()) {
+                    updateCategory = 'today'
+                } else if (lastUpdated.getTime() < today.getTime() && lastUpdated.getTime() > 0) {
+                    updateCategory = 'past'
+                } else {
+                    updateCategory = 'never'
+                }
+                if (!map[updateCategory]) {
+                    map[updateCategory] = 0
+                }
+                map[updateCategory]++
+                return map
+            }, { today: 0, past: 0, never: 0 })
+
+            locCountByUpdateTime.total = locs.length
+            return locCountByUpdateTime
+        })
+}
+
 
 function setSortBy(sortBy = {}) {
     gSortBy = sortBy

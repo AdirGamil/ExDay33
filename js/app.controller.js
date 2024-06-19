@@ -16,6 +16,7 @@ window.app = {
   onShareLoc,
   onSetSortBy,
   onSetFilterBy,
+  renderLocStatsByDate,
 }
 
 function onInit() {
@@ -72,7 +73,7 @@ function renderLocs(locs) {
   elLocList.innerHTML = strHTML || 'No locs to show'
 
   renderLocStats()
-
+  renderLocStatsByDate()
   if (selectedLocId) {
     const selectedLoc = locs.find((loc) => loc.id === selectedLocId)
     displayLoc(selectedLoc)
@@ -280,6 +281,12 @@ function onSetFilterBy({ txt, minRate }) {
 function renderLocStats() {
   locService.getLocCountByRateMap().then((stats) => {
     handleStats(stats, 'loc-stats-rate')
+  })
+}
+/* render date function */
+function renderLocStatsByDate() {
+  locService.getLocCountByUpdateTime().then((stats) => {
+      handleStats(stats, 'loc-stats-date')
   })
 }
 
