@@ -18,12 +18,13 @@ window.app = {
   onSetFilterBy,
   renderLocStatsByDate,
   onShowRating,
+  onSubmit,
 }
 
 function onInit() {
   getFilterByFromQueryParams()
   loadAndRenderLocs()
-  
+
   mapService
     .initMap()
     .then(() => {
@@ -159,25 +160,6 @@ function onPanToUserPos() {
     })
 }
 
-function onUpdateLoc(locId) {
-  locService.getById(locId).then((loc) => {
-    const rate = prompt('New rate?', loc.rate)
-    if (rate !== loc.rate) {
-      loc.rate = rate
-      locService
-        .save(loc)
-        .then((savedLoc) => {
-          flashMsg(`Rate was set to: ${savedLoc.rate}`)
-          loadAndRenderLocs()
-        })
-        .catch((err) => {
-          console.error('OOPs:', err)
-          flashMsg('Cannot update location')
-        })
-    }
-  })
-}
-
 function onSelectLoc(locId) {
   return locService
     .getById(locId)
@@ -288,7 +270,7 @@ function renderLocStats() {
 /* render date function */
 function renderLocStatsByDate() {
   locService.getLocCountByUpdateTime().then((date) => {
-      handleStats(date, 'loc-stats-date')
+    handleStats(date, 'loc-stats-date')
   })
 }
 
@@ -344,10 +326,53 @@ function cleanStats(stats) {
   return cleanedStats
 }
 
-
-function onShowRating(newVal){
+function onShowRating(newVal) {
   document.querySelector('#ratingValue').innerHTML = newVal
-  // console.log('hey');
 }
 
+function onUpdateLoc(locId) {
+  locService.getById(locId).then((loc) => {
+    openModal(loc)
+  })
+}
 
+function openModal(loc) {
+  const modal = document.querySelector('.user-add-update')
+  modal.classList.remove('hidden')
+
+  document.getElementById('ratingInput').value = loc.rate || 3
+  document.getElementById('ratingValue').innerText = loc.rate || 3
+  document.getElementById('textInput').value = loc.name || ''
+
+  modal.querySelector('form').onsubmit = function (ev) {
+    ev.preventDefault()
+    onSubmit(ev, loc)
+  }
+}
+
+function closeModal() {
+  document.querySelector('.user-add-update').classList.add('hidden')
+}
+
+function onSubmit(ev, loc) {
+  const rate = document.getElementById('ratingInput').value
+  const name = document.getElementById('textInput').value
+
+  if (rate !== loc.rate || name !== loc.name) {
+    loc.rate = rate
+    loc.name = name
+    locService
+      .save(loc)
+      .then((savedLoc) => {
+        flashMsg(`Rate was set to: ${savedLoc.rate}`)
+        loadAndRenderLocs()
+        closeModal()
+      })
+      .catch((err) => {
+        console.error('OOPs:', err)
+        flashMsg('Cannot update location')
+      })
+  } else {
+    closeModal()
+  }
+}
