@@ -132,8 +132,11 @@ function getLocCountByUpdateTime() {
             }, { today: 0, past: 0, never: 0 })
 
             locCountByUpdateTime.total = locs.length
+            console.log(locCountByUpdateTime );
             return locCountByUpdateTime
+
         })
+
 }
 
 
